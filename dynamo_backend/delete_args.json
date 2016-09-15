@@ -1,0 +1,9 @@
+{
+    "operation": "delete",
+    "tableName": "DynamoBackend",
+    "payload": {
+        "Key": {
+            "username": "andrewalexander"
+        }
+    }
+}

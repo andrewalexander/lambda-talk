@@ -1,0 +1,9 @@
+{
+    "operation": "read",
+    "tableName": "DynamoBackend",
+    "payload": {
+        "Key": {
+            "username": "andrewalexander"
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "operation": "create",
+    "tableName": "DynamoBackend",
+    "payload": {
+        "Item": {
+            "username": "andrewalexander",
+            "github": "https://github.com/andrewalexander"
+        }
+    }
+}

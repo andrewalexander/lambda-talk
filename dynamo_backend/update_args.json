@@ -1,0 +1,13 @@
+{
+  "operation": "update",
+  "tableName": "DynamoBackend",
+  "payload": {
+    "Key": {
+      "username": "andrewalexander"
+    },
+    "UpdateExpression": "set new_field = :n",
+    "ExpressionAttributeValues": {
+      ":n": "new_value"
+    }
+  }
+}
