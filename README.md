@@ -1,4 +1,4 @@
-# Carbon Hackathon AWS Lambda Hacks
+# AWS Lambda for Hackathons
 ## TL;DR for lambda
 No server, just code. Code runs in response to events or on a fixed schedule. You are charged for execution time of your code.
 
