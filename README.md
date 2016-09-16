@@ -1,5 +1,5 @@
 # Carbon Hackathon AWS Lambda Hacks
-## TL;DR for lambda: 
+## TL;DR for lambda
 No server, just code. Code runs in response to events or on a fixed schedule. You are charged for execution time of your code.
 
 ## Slightly longer description
@@ -17,7 +17,7 @@ Some common use cases:
 - Automatically run any code you want on a schedule
 - Automatically respond to a physical action (Arduino sensor) or send a signal to a physical device that can accept REST calls
 - Automatically invoke any number of other REST APIs (internal or external)
-- Run any combination of the above asynchronously with no worried about scalability
+- Run any combination of the above asynchronously with no worries about scalability
 
 # Walkthrough: Event Based Lambda function - DynamoDB
 By far the most common use case of [AWS Lambda](https://aws.amazon.com/documentation/lambda/) functions is event-based functions. These are functions that are executed when a particular AWS API action is done. The code can be anything - it can be used to send an email/text message, it can trigger other lambda functions in a cascading chain of Lambdas, or it can be used to call some other API (Twilio, Nessie, any other Hackathan API)
@@ -80,7 +80,7 @@ Select the `microservice-http-endpoint` or `microservice-http-endpoint-python` b
 
 On the next step, we want to select API Gateway as our trigger. It may pre-populate the API name to LambdaMicroservice or another API from API Gateway (if you have created one previously). If that's the case, you can just enter whatever name you'd like for `API name` instead and it will create the API for you with that name.
 
-Change resource name to `/` - this is what follows at the end of the URL. For example, if you wanted `/api/events/id`, you would put `/api/events/` as your resource here.
+Change resource name to `/` - this is what follows at the end of the URL. For example, if you wanted to POST to `https://your-api-gateway-url-here/DynamoBackend`, you would put `/DynamoBackend` as your resource here. The screenshot below shows the `/` endpoint, but the later API Gateway screenshot shows the `DynamoBackend` endpoint as well to reiterate this point.
 
 Change the Method to `POST`
 
@@ -102,14 +102,14 @@ That't it - just make the table and you are good to go.
 ### Test from API Gateway
 Go to the API Gateway console. You should see the LambdaMicroservice API with a description of _Created by AWS Lambda_. Click that to see the API we created. In a tree view, you should see the name of the API you created along with any resources underneath. In my example, the resource is `/DynamoBackend`, and underneath that resource we have a single `/POST` endpoint. Click the POST endpoint and you are presented with a flowchart of the API. Each of those links can be clicked to configure your API. For now, click the TEST button with the lightning bolt under it to bring up the test screen. 
 
-You can use the json documents included in the `dynamo_backend` folder as inputs for the test box. Be sure to change the name of your lambda function to match!
+You can use the json documents included in the `dynamo_backend` folder as inputs for the test box. Be sure to change the name of your lambda function and DynamoDB table to match!
 
 You now have a working API (sort of)!
 
 ![Working API (sort of)](images/api_gateway_flowchart.png)
 
 #### Deploy API with API token
-This is all well and good while you have console access, but in order to actually be useful in a hack, you will need to be able to use an API token (at minimum) in order to authorize access to the API. 
+This is all well and good while you have console access, but in order to actually be useful in a hack, you will need to be able to use an API token (at minimum) in order to authorize access to the API and let us use the newly generated URL to POST/GET/PUT to.
 
 To do this, click `Usage Plans` on the left and Click `Create`. Give it a unique name and an optional description. I usually enable throttling at a rate of 250 and a burst of 500 with no quota. Then click Next.
 
@@ -123,19 +123,26 @@ One fun thing to note is that we get a warning about our endpoints not being pro
 
 Now we want to `Create API Key and add to Usage Plan`. Give it any name you want and let it auto-generate for you. Now we are done!
 
-Then go to `API Keys` on the left and select the key you just created to grab it for use later.
+Then go to `API Keys` on the left and select the key you just created to grab it for use later. Just click `Show` and it will have the alphanumeric API key ready for you to use in some API requests.
 
 ![APIKey](images/api_gateway_api_key.png)
 
-Before we can test out our backend, we need to deploy the API.
+#### Set up our endpoint to use the API Key
+Based on our choice to have our API open with an access key, the default position for new endpoints is to be wide open. Obviously, this isn't what we want so in order to protect our endpoint with the key, we need to configure it as such. Doing so is pretty straight forward.
 
-To deploy, just click Actions -> Deploy API. You can change settings here if you want to, but you can always change them later and/or re-deploy your API key. 
+Click your API on the left under `APIs`, and then click the method you want to protect under the list of resources (POST, GET, etc). You will then see the flowchart view again. We want to click the `Method Request` to open up the options for that specific request, and set `API Key Required` equal to `true`. If you have multiple endpoints (different endpoints to POST or one for GET, one for POST, etc.), you will need to repeat this process for each endpoint. 
 
-To change settings later, go to APIs -> LambdaMicroservice -> DynamoBackend -> Stages.
+![ProtectEndpoint](images/api_gateway_protect_endpoint.png)
+
+We are almost done! But before we can test out our backend using the URL provided by API Gateway, we need to deploy the API.
+
+To deploy, just click Actions -> Deploy API. You can change settings here if you want to, but you can always change them later and/or re-deploy your API. 
+
+To change settings later, go to APIs -> LambdaMicroservice -> {Resource Name}(was `DynamoBackend` in this example) -> Stages.
 
 Once you deploy the API, you will be given an actual URL that you can use for typical REST API calls like you would in any other language. You can export the Swagger UI JSON/YAML for easy generation of API docs. You can also generate an SDK for easy incorporation into an iOS/Android/JavaScript project. 
 
-I like to use [Postman](https://www.getpostman.com/) for testing APIs, since it makes it super easy to add headers/edit the payload being sent. 
+I like to use [Postman](https://www.getpostman.com/) for testing APIs, since it makes it super easy to add headers/edit the payload being sent. The biggest plus of Postman though is that once you get the request working in Postman, you can export to almost any language to copy/paste the code directly in to your project and you can rest assured that it will Just Work<sup>TM</sup>.
 
 Regardless of what you use, be sure to add the Header `x-api-key` with the API key you grabbed earlier to authenticate your requests. In other words, you will want {'x-api-key': 'long-alphanumeric-api-key-here'} as a key-value pair in the Header of every request to your API.
 
