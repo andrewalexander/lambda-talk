@@ -1,7 +1,0 @@
-{
-  "operation": "echo",
-  "tableName": "DynamoBackend",
-  "payload": {
-  	"test": "123"
-  }
-}

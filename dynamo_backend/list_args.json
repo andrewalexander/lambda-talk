@@ -1,5 +1,0 @@
-{
-  "operation": "list",
-  "tableName": "DynamoBackend",
-  "payload": {}
-}
